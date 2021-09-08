@@ -1,16 +1,12 @@
-import {
-  LockOutlined,
-  MobileOutlined,
-} from '@ant-design/icons';
 import { message, } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormCaptcha, ProFormText } from '@ant-design/pro-form';
 import { Card } from 'antd';
 import { useIntl, Link, history, FormattedMessage, useModel } from 'umi';
 import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
 import bgImg from '../../../assets/image/backiee-89041.jpg';
+import { getEmail } from '@/services/api/login'
 
 
 const Login = () => {
@@ -167,8 +163,9 @@ const Login = () => {
                   },
                 ]}
                 onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
+                  const result = await getEmail({
+                    username:'哈哈1',
+                    email:'2209102475@qq.com',
                   });
 
                   if (result === false) {
