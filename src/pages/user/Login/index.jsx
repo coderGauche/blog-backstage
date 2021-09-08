@@ -2,18 +2,19 @@ import {
   LockOutlined,
   MobileOutlined,
 } from '@ant-design/icons';
-import { Alert,  message,  } from 'antd';
+import { message, } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormCaptcha, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
-import Footer from '@/components/Footer';
+import { Card } from 'antd';
+import { useIntl, Link, history, FormattedMessage, useModel } from 'umi';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
+import bgImg from '../../../assets/image/backiee-89041.jpg';
+
 
 const Login = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState({});
   const { initialState, setInitialState } = useModel('@@initialState');
   const intl = useIntl();
 
@@ -25,10 +26,10 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (values) => { 
+  const handleSubmit = async (values) => {
     console.log(values);
     setSubmitting(true);
-    const type = 'mobile' 
+    const type = 'mobile'
     try {
       // 登录
       const msg = await login({ ...values, type });
@@ -48,8 +49,6 @@ const Login = () => {
         history.push(redirect || '/');
         return;
       } // 如果失败去设置用户错误信息
-
-      setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
@@ -60,135 +59,129 @@ const Login = () => {
 
     setSubmitting(false);
   };
-
-  const { status, type: loginType } = userLoginState;
+  const contentStyle = {
+    backgroundImage: 'url(' + bgImg + ')'//图片的路径
+  }
+  const bodyStyle = {
+    backgroundColor:'#12111F',
+    boxShadow: '0 0 4px #fff',
+    border:'1px solid #745BD0',
+  }
   return (
     <div className={styles.container}>
-      <div className={styles.lang} data-lang>
-        {SelectLang && <SelectLang />}
-      </div>
-      <div className={styles.content}>
+      <div className={styles.content} style={contentStyle}>
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              {/* <img alt="logo" className={styles.logo} src="/logo.svg" /> */}
               <span className={styles.title}>Gauche 楽 后台管理系统</span>
             </Link>
           </div>
           <div className={styles.desc} />
         </div>
-
-        <div className={styles.main}>
-          <ProForm
-            initialValues={{
-              autoLogin: true,
-              email:'2209102475@qq.com',
-              captcha:'123456'
-            }}
-            submitter={{
-              searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.submit',
-                  defaultMessage: '登录',
-                }),
-              },
-              render: (_, dom) => dom.pop(),
-              submitButtonProps: {
-                loading: submitting,
-                size: 'large',
-                style: {
-                  width: '100%',
+        <Card bodyStyle={bodyStyle} bordered={false}>
+          <div className={styles.main}>
+            <ProForm
+              initialValues={{
+                autoLogin: true,
+                email: '2209102475@qq.com',
+                captcha: '123456'
+              }}
+              submitter={{
+                searchConfig: {
+                  submitText: intl.formatMessage({
+                    id: 'pages.login.submit',
+                    defaultMessage: '登录',
+                  }),
                 },
-              },
-            }}
-            onFinish={async (values) => {
-              await handleSubmit(values);
-            }}
-          >
-            <ProFormText
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <MobileOutlined className={styles.prefixIcon} />,
-                  }}
-                  name="email"
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.emailNumber.placeholder',
-                    defaultMessage: '邮箱',
-                  })}
-                  rules={[
-                    {
-                      required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.emailNumber.required"
-                          defaultMessage="请输入QQ邮箱！"
-                        />
-                      ),
-                    },
-                    {
-                      pattern: /^[1-9][0-9]{4,10}@qq.com$/,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.emailNumber.invalid"
-                          defaultMessage="QQ邮箱格式错误！"
-                        />
-                      ),
-                    },
-                  ]}
-                />
-                <ProFormCaptcha
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <LockOutlined className={styles.prefixIcon} />,
-                  }}
-                  captchaProps={{
-                    size: 'large',
-                  }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.captcha.placeholder',
-                    defaultMessage: '请输入验证码',
-                  })}
-                  captchaTextRender={(timing, count) => {
-                    if (timing) {
-                      return `${count} ${intl.formatMessage({
-                        id: 'pages.getCaptchaSecondText',
-                        defaultMessage: '获取验证码',
-                      })}`;
-                    }
-
-                    return intl.formatMessage({
-                      id: 'pages.login.phoneLogin.getVerificationCode',
+                render: (_, dom) => dom.pop(),
+                submitButtonProps: {
+                  loading: submitting,
+                  size: 'large',
+                  style: {
+                    width: '100%',
+                  },
+                },
+              }}
+              onFinish={async (values) => {
+                await handleSubmit(values);
+              }}
+            >
+              <ProFormText
+                name="email"
+                placeholder={intl.formatMessage({
+                  id: 'pages.login.emailNumber.placeholder',
+                  defaultMessage: '邮箱',
+                })}
+                rules={[
+                  {
+                    required: true,
+                    message: (
+                      <FormattedMessage
+                        id="pages.login.emailNumber.required"
+                        defaultMessage="请输入QQ邮箱！"
+                      />
+                    ),
+                  },
+                  {
+                    pattern: /^[1-9][0-9]{4,10}@qq.com$/,
+                    message: (
+                      <FormattedMessage
+                        id="pages.login.emailNumber.invalid"
+                        defaultMessage="QQ邮箱格式错误！"
+                      />
+                    ),
+                  },
+                ]}
+              />
+              <ProFormCaptcha
+                captchaProps={{
+                  size: 'large',
+                }}
+                placeholder={intl.formatMessage({
+                  id: 'pages.login.captcha.placeholder',
+                  defaultMessage: '请输入验证码',
+                })}
+                captchaTextRender={(timing, count) => {
+                  if (timing) {
+                    return `${count} ${intl.formatMessage({
+                      id: 'pages.getCaptchaSecondText',
                       defaultMessage: '获取验证码',
-                    });
-                  }}
-                  name="captcha"
-                  rules={[
-                    {
-                      required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.captcha.required"
-                          defaultMessage="请输入验证码！"
-                        />
-                      ),
-                    },
-                  ]}
-                  onGetCaptcha={async (phone) => {
-                    const result = await getFakeCaptcha({
-                      phone,
-                    });
+                    })}`;
+                  }
 
-                    if (result === false) {
-                      return;
-                    }
+                  return intl.formatMessage({
+                    id: 'pages.login.phoneLogin.getVerificationCode',
+                    defaultMessage: '获取验证码',
+                  });
+                }}
+                name="captcha"
+                rules={[
+                  {
+                    required: true,
+                    message: (
+                      <FormattedMessage
+                        id="pages.login.captcha.required"
+                        defaultMessage="请输入验证码！"
+                      />
+                    ),
+                  },
+                ]}
+                onGetCaptcha={async (phone) => {
+                  const result = await getFakeCaptcha({
+                    phone,
+                  });
 
-                    message.success('获取验证码成功！验证码为：1234');
-                  }}
-                />
-          </ProForm>
-        </div>
+                  if (result === false) {
+                    return;
+                  }
+
+                  message.success('获取验证码成功！验证码为：1234');
+                }}
+              />
+            </ProForm>
+          </div>
+        </Card>
       </div>
-      <Footer />
     </div>
   );
 };
